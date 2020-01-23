@@ -14,7 +14,7 @@ import android.graphics.Canvas
 
 val nodes : Int = 5
 val switches : Int = 5
-val scGap : Float = 0.02f
+val scGap : Float = 0.02f / switches
 val strokeFactor : Float = 90f
 val delay : Long = 20
 val switchColor : Int = Color.parseColor("#3F51B5")
@@ -23,8 +23,8 @@ val backColor : Int = Color.parseColor("#FAFAFA")
 val rFactor : Float = 8f
 
 fun Int.inverse() : Float = 1f / this
-fun Float.divideScale(i : Int, n : Int) : Float = Math.max(0f, this - i * n.inverse())
-fun Float.maxScale(i : Int, n : Int) : Float = Math.min(n.inverse(), maxScale(i, n)) * n
+fun Float.maxScale(i : Int, n : Int) : Float = Math.max(0f, this - i * n.inverse())
+fun Float.divideScale(i : Int, n : Int) : Float = Math.min(n.inverse(), maxScale(i, n)) * n
 fun Float.sinify() : Float = Math.sin(this * Math.PI).toFloat()
 
 fun Canvas.drawStepSwitch(i : Int, scale : Float, w : Float, paint : Paint) {
@@ -33,6 +33,7 @@ fun Canvas.drawStepSwitch(i : Int, scale : Float, w : Float, paint : Paint) {
     val sf : Float = scale.sinify().divideScale(i, switches)
     val r : Float = gap / rFactor
     save()
+    translate(i * gap, 0f)
     drawLine(0f, 0f, gap * sf, 0f, paint)
     drawCircle(r + gap * sf, 0f, r, paint)
     restore()
@@ -40,7 +41,7 @@ fun Canvas.drawStepSwitch(i : Int, scale : Float, w : Float, paint : Paint) {
 
 fun Canvas.drawStepSwitches(scale : Float, w : Float, paint : Paint) {
     val scDiv : Double = 1.0 / switches
-    val i : Int = Math.floor(scale.toFloat() / scDiv).toInt()
+    val i : Int = Math.floor(scale.sinify() / scDiv).toInt()
     for (j in 0..(i)) {
         drawStepSwitch(j, scale, w, paint)
     }
@@ -59,8 +60,8 @@ fun Canvas.drawSSBNode(i : Int, scale : Float, paint : Paint) {
     paint.strokeCap = Paint.Cap.ROUND
     save()
     translate(0f, gap * (i + 1))
-    drawStepSwitches(scale, w, paint)
     drawFullLine(w, paint)
+    drawStepSwitches(scale, w, paint)
     restore()
 }
 
