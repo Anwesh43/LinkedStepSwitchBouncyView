@@ -217,4 +217,13 @@ class StepSwitchBouncyView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    companion object {
+
+        fun create(activity : Activity) : StepSwitchBouncyView {
+            val view : StepSwitchBouncyView = StepSwitchBouncyView(activity)
+            activity.setContentView(view)
+            return view
+        }
+    }
 }
