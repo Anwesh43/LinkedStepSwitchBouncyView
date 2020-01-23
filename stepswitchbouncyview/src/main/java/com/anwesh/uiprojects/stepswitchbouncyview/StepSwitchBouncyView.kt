@@ -194,4 +194,26 @@ class StepSwitchBouncyView(ctx : Context) : View(ctx) {
             curr.startUpdating(cb)
         }
     }
+
+    data class Renderer(var view : StepSwitchBouncyView) {
+
+        private val animator : Animator = Animator(view)
+        private val ssb : StepSwitchBouncy = StepSwitchBouncy(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(backColor)
+            ssb.draw(canvas, paint)
+            animator.animate {
+                ssb.update {
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            ssb.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
